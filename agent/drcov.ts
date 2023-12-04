@@ -2,7 +2,7 @@
 
 function generateHead(headFile: File, bbAmount: number, modules: ModuleInfo[]) {
 
-    headFile.write("DRCOV VERSION: 3\n");
+    headFile.write("DRCOV VERSION: 3\n");	// just change it to 2 if you want to use in "Lighthouse" IDA plugin
     headFile.write("DRCOV FLAVOR: drcov\n");
 
     headFile.write(`Module Table: version 5, count ${modules.length}\n`);
@@ -45,7 +45,8 @@ const _instrumentClosure = () => {
 
         Stalker.follow(threadId, {
             events: {
-                compile: true,
+                // compile: true, // use only compile if you need only unique blocks
+		block: true	  // using block because i want to see full history of execution
             },
             onReceive: (events) => {
                 GlobalRunCount++
@@ -61,7 +62,7 @@ const _instrumentClosure = () => {
 
                 generateHead(logFile, currBbAmount, modules);
 
-                // console.log(`${GlobalRunCount}: Basic blocks ${bb_events.length} (unfiltered)`)
+                // console.log(`${GlobalRunCount}: Basic blocks ${bbEvents.length} (unfiltered)`)
 
 
                 // Write coverage blocks one by one
@@ -86,14 +87,14 @@ const _instrumentClosure = () => {
 
                     const modAddr = modBases[modName];
 
-                    const size = bbEnd.sub(bbStart).toUInt32();       // szie
-                    const offset = bbStart.sub(modAddr).toUInt32();    // start
-                    const modId = modIds[modName].toUInt32();          // mod_id
+                    const size = bbEnd.sub(bbStart).toUInt32();		// szie
+                    const offset = bbStart.sub(modAddr).toUInt32();	// start
+                    const modId = modIds[modName].toUInt32();		// mod_id
 
-                    const arr = new Uint32Array(1);                     // holds start
+                    const arr = new Uint32Array(1);			// holds start
                     arr[0] = offset;
 
-                    const sizeAndModId = new Uint16Array(2);         // holds size, mod_id
+                    const sizeAndModId = new Uint16Array(2);		// holds size, mod_id
                     sizeAndModId[0] = size;
                     sizeAndModId[1] = modId;
 
@@ -176,9 +177,10 @@ export const instrumentDrcov = _instrumentClosure()
 // Interceptor.attach(addr, {
 //     onEnter(_args) {
 //         Stalker.flush()
-//         instrument(this.threadId, "new_cov");
+//         instrumentDrcov(this.threadId, "new_cov");
 //     },
 //     onLeave(_retval) {
 //         Stalker.unfollow(this.threadId);
 //     },
 // });
+
