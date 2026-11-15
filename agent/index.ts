@@ -16,7 +16,7 @@ for (const module of modMaps.values()) {
 }
 
 // Replace this with your addr
-const addr = Module.getExportByName(null, "add")
+const addr = Module.getGlobalExportByName("add")
 Interceptor.attach(addr, {
     onEnter(_args) {
         Stalker.flush()

@@ -10,10 +10,13 @@
     "watch": "frida-compile agent/index.ts -o _agent.js -w"
   },
   "devDependencies": {
-    "@types/frida-gum": "^18.4.1",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
-    "eslint": "^8.55.0",
-    "frida-compile": "^16.4.1"
-  }
+    "@types/frida-gum": "^19.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
+    "eslint": "^10.15.0",
+    "frida-compile": "^19.1.0"
+  },
+  "trustedDependencies": [
+    "frida"
+  ]
 }

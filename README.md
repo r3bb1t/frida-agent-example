@@ -3,7 +3,9 @@
 ```sh
 $ git clone git://github.com/oleavr/frida-agent-example.git
 $ cd frida-agent-example/
-$ npm install
+$ bun install
+$ bun pm trust frida
+$ bun install
 $ frida -U -f com.example.android --no-pause -l _agent.js
 ```
 
