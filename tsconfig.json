@@ -5,7 +5,7 @@
     "lib": ["es2022"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "types": ["frida-gum"],
+    "types": ["frida-gum", "node"],
     "allowJs": true,
     "noEmit": true,
     "strict": true,
