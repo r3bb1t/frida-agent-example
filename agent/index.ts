@@ -1,29 +1,20 @@
-import { instrumentDrcov } from "./drcov.js";
+import { traceFunctionCoverage } from "./drcov.js";
 
+/** Exported function of the main executable to record coverage for. */
+const TARGET_EXPORT = "add";
+/** Files are written to `<OUTPUT_PREFIX>_<n>.log` in the target's working directory. */
+const OUTPUT_PREFIX = "new_cov";
 
-Stalker.trustThreshold = 0; // For the fastest instrumentation (not suitable for packed/obfuscated)
-const mainModule = Process.enumerateModules()[0].name;
+// Trust code from its first execution: fastest, but wrong for self-modifying
+// (packed/obfuscated) code; use -1 there.
+Stalker.trustThreshold = 0;
 
-
-
-const modMaps = new ModuleMap()
-for (const module of modMaps.values()) {
-    // Instrumenting only the binary we launched
-    if (module.name != mainModule) {
-        // console.log(`excluding  ${module.name}`)
-        Stalker.exclude(module)
+// Record only blocks executed inside the main executable.
+const mainModule = Process.mainModule;
+for (const module of Process.enumerateModules()) {
+    if (module.path !== mainModule.path) {
+        Stalker.exclude(module);
     }
 }
 
-// Replace this with your addr
-const addr = Module.getGlobalExportByName("add")
-Interceptor.attach(addr, {
-    onEnter(_args) {
-        Stalker.flush()
-        // Replace this with the name of coverage file you want
-        instrumentDrcov(this.threadId, "new_cov");
-    },
-    onLeave(_retval) {
-        Stalker.unfollow(this.threadId);
-    },
-});
+traceFunctionCoverage(mainModule.getExportByName(TARGET_EXPORT), { outputPrefix: OUTPUT_PREFIX });

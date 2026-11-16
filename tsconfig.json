@@ -3,9 +3,13 @@
     "strictPropertyInitialization": false,
     "target": "es2022",
     "lib": ["es2022"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["frida-gum"],
     "allowJs": true,
     "noEmit": true,
     "strict": true,
     "esModuleInterop": true
-  }
+  },
+  "include": ["agent/**/*"]
 }
